@@ -110,12 +110,11 @@ public class ExcelUtils {
 		return colCount;
 	}
 
-	@SuppressWarnings("static-access")
 	public static void setCellData(String sResult, int iRowNum, int iColNum, String sSheetName) throws Exception {
 		try {
 			ExcelWSheet = ExcelWBook.getSheet(sSheetName);
 			Row = ExcelWSheet.getRow(iRowNum);
-			Cell = Row.getCell(iColNum, Row.RETURN_BLANK_AS_NULL);
+			Cell = Row.getCell(iColNum);
 			if (Cell == null) {
 				Cell = Row.createCell(iColNum);
 				Cell.setCellValue(sResult);
@@ -126,7 +125,7 @@ public class ExcelUtils {
 			ExcelWBook.write(fileOut);
 			fileOut.close();
 			ExcelWBook = new XSSFWorkbook(new FileInputStream(Constants.Path_TestData));
-			logger.info("Test result: " + sResult + "\n\n" + " written successfully on: "
+			logger.info("Data: " + sResult + "\n\n" + " written successfully on: "
 					+ Constants.File_TestData + " - " + sSheetName);
 		} catch (Exception e) {
 			logger.error("ExcelUtils|setCellData. Exception Message - " + e.getMessage());

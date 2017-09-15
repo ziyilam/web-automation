@@ -23,6 +23,7 @@ import executionEngine.DriverScript;
 import io.github.bonigarcia.wdm.ChromeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import utility.ExcelUtils;
 
 public class ActionKeywords {
 	public static WebDriver driver;
@@ -121,6 +122,7 @@ public class ActionKeywords {
 			Boolean bNot=false;
 			logger.info("Action......Try Verify text");
 			DriverScript.sCompareText = driver.findElement(By.xpath(sObjectLocator)).getText();
+			String stext = driver.findElement(By.xpath(sObjectLocator)).getAttribute("value");
 			String sInput = sTestData;
 			String[] aWords = sInput.split("\\s",2);
 			for(String w:aWords) {
@@ -131,19 +133,26 @@ public class ActionKeywords {
 				}
 			}
 			if(bNot==false) {
-				if (DriverScript.sCompareText.equalsIgnoreCase(sTestData)) {
-					logger.info(DriverScript.sCompareText + " Text verified to be the same ");
+				if (DriverScript.sCompareText.equalsIgnoreCase(sTestData)||stext.equalsIgnoreCase(sTestData)) {
+					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + sTestData);
+					logger.info("Text is: " + stext + " compared with expected: " + sTestData);
+					logger.info(" Text verified to be the SAME ");
 				} else {
 					DriverScript.bResult = false;
 					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + sTestData);
-					logger.info("Text not the same");
+					logger.info("Text is: " + stext + " compared with expected: " + sTestData);
+					logger.info("Text verified NOT the same");
 				}
 			} else {
-				if (!DriverScript.sCompareText.equalsIgnoreCase(aWords[1])) {
-					logger.info(DriverScript.sCompareText + " Text verified not the same ");
+				if (!DriverScript.sCompareText.equalsIgnoreCase(aWords[1])&&!stext.equalsIgnoreCase(aWords[1])) {
+					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + aWords[1]);
+					logger.info("Text is: " + stext + " compared with expected: " + aWords[1]);
+					logger.info(" Text verified NOT the same ");
 				} else {
 					DriverScript.bResult = false;
 					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + aWords[1]);
+					logger.info("Text is: " + stext + " compared with expected: " + aWords[1]);
+					logger.info(" Text verified to be the SAME ");
 				}
 			}
 			/*DriverScript.sCompareText = driver.findElement(By.xpath(sObjectLocator)).getText();
@@ -305,7 +314,7 @@ public class ActionKeywords {
 	
 	public void waitUntil(String sObjectLocator, String sActionKeyword, String sTestData) {
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, 20);
+			WebDriverWait wait = new WebDriverWait(driver, 60);
 			switch(sTestData) {
 			case "clickable":
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(sObjectLocator)));
@@ -316,6 +325,18 @@ public class ActionKeywords {
 			}
 		} catch (Exception e) {
 			logger.error(" ActionKeywords|waitUntil. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
+	}
+	
+	public void GetValueNSetCell(String sObjectLocator, String sActionKeyword, String sTestData) {
+		try {
+			String sText = driver.findElement(By.xpath(sObjectLocator)).getAttribute("value");
+			logger.info("text: " + sText);
+			logger.info("iTestcase: " + DriverScript.iCountTestStep);
+			ExcelUtils.setCellData(sText, DriverScript.iCountTestStep, Constants.Col_TestData, Constants.Sheet_TestSteps);
+		} catch (Exception e) {
+			logger.error(" ActionKeywords|tryGetNVerify. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}

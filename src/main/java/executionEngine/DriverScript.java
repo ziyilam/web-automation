@@ -32,6 +32,7 @@ public class DriverScript {
 	public static int iLastTestStep;
 	public static int iCountTestStep;
 	public static int iCountCol;
+	public static int iTestcase;
 
 	private static final Logger logger = LogManager.getLogger(DriverScript.class.getName());
 
@@ -58,7 +59,7 @@ public class DriverScript {
 		record_HeaderName();
 
 		// Loop from test case no.1 to the last test case
-		for (int iTestcase = 1; iTestcase <= iTotalTestCases; iTestcase++) {
+		for (iTestcase = 1; iTestcase <= iTotalTestCases; iTestcase++) {
 			// Every new Test case the bResult is reset to true
 			bResult = true;
 			logger.info("TestCase no.: " + iTestcase);
