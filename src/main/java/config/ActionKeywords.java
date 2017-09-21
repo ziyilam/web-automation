@@ -121,8 +121,24 @@ public class ActionKeywords {
 		try {
 			Boolean bNot=false;
 			logger.info("Action......Try Verify text");
-			DriverScript.sCompareText = driver.findElement(By.xpath(sObjectLocator)).getText();
-			String stext = driver.findElement(By.xpath(sObjectLocator)).getAttribute("value");
+			String sText = driver.findElement(By.xpath(sObjectLocator)).getText();
+			String sValue = driver.findElement(By.xpath(sObjectLocator)).getAttribute("value");
+			String sPlaceholder = driver.findElement(By.xpath(sObjectLocator)).getAttribute("placeholder");
+			int iType = 0;
+			if (sText.length()!=0) {
+				iType = 0;
+				DriverScript.sCompareText = sText;
+				logger.info("Text: [" + sText + "]" + " iType: [" + iType + "]");
+			} else if (sValue.length()!=0) {
+				iType = 1;
+				DriverScript.sCompareText = sValue;
+				logger.info("Value: [" + sValue + "]" + " iType: [" + iType + "]");
+			} else if (sPlaceholder.length()!=0){
+				iType = 2;
+				DriverScript.sCompareText = sPlaceholder;
+				logger.info("Placeholder: [" + sPlaceholder + "]" + " iType: [" + iType + "]");
+			}
+			
 			String sInput = sTestData;
 			String[] aWords = sInput.split("\\s",2);
 			for(String w:aWords) {
@@ -133,37 +149,29 @@ public class ActionKeywords {
 				}
 			}
 			if(bNot==false) {
-				if (DriverScript.sCompareText.equalsIgnoreCase(sTestData)||stext.equalsIgnoreCase(sTestData)) {
-					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + sTestData);
-					logger.info("Text is: " + stext + " compared with expected: " + sTestData);
+				if (DriverScript.sCompareText.equalsIgnoreCase(sTestData)) {
+					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + sTestData + "]");
+					//logger.info("Value is: [" + sValue + "] compared with expected: [" + sTestData + "]");
 					logger.info(" Text verified to be the SAME ");
 				} else {
 					DriverScript.bResult = false;
-					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + sTestData);
-					logger.info("Text is: " + stext + " compared with expected: " + sTestData);
+					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + sTestData + "]");
+					//logger.info("Value is: [" + sValue + "] compared with expected: [" + sTestData + "]");
 					logger.info("Text verified NOT the same");
 				}
 			} else {
-				if (!DriverScript.sCompareText.equalsIgnoreCase(aWords[1])&&!stext.equalsIgnoreCase(aWords[1])) {
-					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + aWords[1]);
-					logger.info("Text is: " + stext + " compared with expected: " + aWords[1]);
+				if (!DriverScript.sCompareText.equalsIgnoreCase(aWords[1])) {
+					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + aWords[1] + "]");
+					//logger.info("Value is: [" + sValue + "] compared with expected: [" + aWords[1] + "]");
 					logger.info(" Text verified NOT the same ");
 				} else {
 					DriverScript.bResult = false;
-					logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + aWords[1]);
-					logger.info("Text is: " + stext + " compared with expected: " + aWords[1]);
+					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + aWords[1] + "]");
+					//logger.info("Value is: [" + sValue + "] compared with expected: [" + aWords[1] + "]");
 					logger.info(" Text verified to be the SAME ");
 				}
 			}
-			/*DriverScript.sCompareText = driver.findElement(By.xpath(sObjectLocator)).getText();
-			// if(DriverScript.sCompareText.equals(sTestData)){
-			if (DriverScript.sCompareText.equalsIgnoreCase(sTestData)) {
-				logger.info("Text verified");
-			} else {
-				DriverScript.bResult = false;
-				logger.info("Text is: " + DriverScript.sCompareText + " compared with expected: " + sTestData);
-				logger.info("Text not the same");
-			}*/
+			
 
 		} catch (Exception e) {
 			logger.error("TestStepID: " + DriverScript.sTestStepID + " ActionKeywords|tryVerify. Exception Message - " + e.getMessage());
@@ -267,11 +275,12 @@ public class ActionKeywords {
 		try {
 			DriverScript.sCompareText = driver.getCurrentUrl();
 			if(DriverScript.sCompareText.equals(sObjectLocator)) {
+				logger.info("URL is: [" + DriverScript.sCompareText + "] compared with expected: [" + sObjectLocator + "]");
 				logger.info("URL verified");
 				
 			}else {
 				DriverScript.bResult = false;
-				logger.info("URL is: " + DriverScript.sCompareText + " compared with expected: " + sObjectLocator);
+				logger.info("URL is: [" + DriverScript.sCompareText + "] compared with expected: [" + sObjectLocator + "]");
 				logger.info("Text not the same");
 			}
 		} catch (Exception e) {

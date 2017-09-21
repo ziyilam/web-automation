@@ -119,8 +119,8 @@ public class DriverScript {
 									Constants.Sheet_TestCases);
 							logger.warn("\n\n......Test Case Failed for " + sTestCaseID + "......"
 									+ "\n\n\n");
-							actionKeywords.tryClose("", "", "");
-							logger.info("close browser from TestCase loop");
+							//actionKeywords.tryClose("", "", "");
+							//logger.info("close browser from TestCase loop");
 							break;
 						}
 
