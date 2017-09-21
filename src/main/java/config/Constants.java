@@ -19,8 +19,8 @@ public class Constants {
 
 	public static final int Col_TestCaseID = 0;
 	public static final int Col_TestStepID = 1;
-	public static final int Col_ObjectLocator = 3;
-	public static final int Col_ActionKeyword = 4;
+	public static final int Col_ActionKeyword = 3;
+	public static final int Col_ObjectLocator = 4;
 	public static final int Col_TestData = 5;
 	public static final int Col_CaseResults = 3;
 	public static final int Col_StepResults = 6;

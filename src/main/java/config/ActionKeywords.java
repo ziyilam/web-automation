@@ -38,7 +38,7 @@ public class ActionKeywords {
 				//System.setProperty(Constants.Chrome_Property1, Constants.Chrome_Property2);
 				ChromeDriverManager.getInstance().setup();
 				driver = new ChromeDriver();
-				// driver.manage().window().maximize();
+				driver.manage().window().maximize();
 				break;
 
 			case "ie":
