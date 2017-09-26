@@ -18,13 +18,15 @@ public class Constants {
 	//public static final String Path_TestData = ".//src//dataEngine//DataEngine.xlsx";
 
 	public static final int Col_TestCaseID = 0;
+	public static final int Col_RunMode = 2;
+	public static final int Col_CaseResults = 3;
 	public static final int Col_TestStepID = 1;
 	public static final int Col_ActionKeyword = 3;
 	public static final int Col_ObjectLocator = 4;
 	public static final int Col_TestData = 5;
-	public static final int Col_CaseResults = 3;
-	public static final int Col_StepResults = 6;
-	public static final int Col_RunMode = 2;
+	public static final int Col_AdditionalRequest = 6;
+	public static final int Col_StepResults = 7;
+	
 	public static final String Sheet_TestCases = "TestCases";
 	public static final String Sheet_TestSteps = "TestSteps";
 	public static final String Sheet_TestData = "TestData";

@@ -25,7 +25,7 @@ public class ExcelUtils {
 			FileInputStream ExcelFile = new FileInputStream(Path);
 			ExcelWBook = new XSSFWorkbook(ExcelFile);
 		} catch (Exception e) {
-			logger.error("ExcelUtils|setExcelFile. Exception Message - " + e.getMessage());
+			logger.error(" * ExcelUtils|setExcelFile. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 
@@ -34,9 +34,11 @@ public class ExcelUtils {
 	public static String getCellData(int RowNum, int ColNum, String SheetName) throws Exception {
 		
 		try {
-			String CellData = "Empty cell";
+			String CellData = "";
+			
 			ExcelWSheet = ExcelWBook.getSheet(SheetName);
 			Cell = ExcelWSheet.getRow(RowNum).getCell(ColNum);
+			
 			if(!Cell.getStringCellValue().isEmpty()) {
 				CellData = Cell.getStringCellValue();
 			}
@@ -44,8 +46,7 @@ public class ExcelUtils {
 			
 
 		} catch (Exception e) {
-			logger.warn("No Cell Data is found and return empty cell");
-
+			logger.warn(" * No Cell Data is found and return [NULL]");
 			return "NULL";
 		}
 	}
@@ -56,7 +57,7 @@ public class ExcelUtils {
 			ExcelWSheet = ExcelWBook.getSheet(SheetName);
 			iNumber = ExcelWSheet.getLastRowNum();
 		} catch (Exception e) {
-			logger.error("ExcelUtils|getRowCount. Exception Message - " + e.getMessage());
+			logger.error(" * ExcelUtils|getRowCount. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 		return iNumber;
@@ -66,7 +67,7 @@ public class ExcelUtils {
 		int iRowNum = 0;
 		try {
 			int rowCount = ExcelUtils.getRowCount(SheetName);
-			logger.info(" rowCount: " + rowCount + " for Sheet: " + SheetName);
+			logger.info(" rowCount: [" + rowCount + "]" + " for Sheet: [" + SheetName + "]");
 			for (; iRowNum <= rowCount; iRowNum++) {
 				//logger.info("cellData: " + ExcelUtils.getCellData(iRowNum, colNum, SheetName));
 				if (ExcelUtils.getCellData(iRowNum, colNum, SheetName).equalsIgnoreCase(sTestCaseName)) {
@@ -74,7 +75,7 @@ public class ExcelUtils {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("ExcelUtils|getRowContains. Exception Message - " + e.getMessage());
+			logger.error(" * ExcelUtils|getRowContains. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 		//logger.info("RowNum: " + iRowNum);
@@ -91,7 +92,7 @@ public class ExcelUtils {
 				} 
 			}
 		} catch (Exception e) {
-			logger.error("ExcelUtils|getTestStepsCount. Exception Message - " + e.getMessage());
+			logger.error(" * ExcelUtils|getTestStepsCount. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 		return i - 1;
@@ -104,7 +105,7 @@ public class ExcelUtils {
 			colCount = ExcelWSheet.getRow(rowNum).getLastCellNum();
 
 		} catch (Exception e) {
-			logger.error("ExcelUtils|getColCount. Exception Message - " + e.getMessage());
+			logger.error(" * ExcelUtils|getColCount. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 		return colCount;
@@ -125,10 +126,10 @@ public class ExcelUtils {
 			ExcelWBook.write(fileOut);
 			fileOut.close();
 			ExcelWBook = new XSSFWorkbook(new FileInputStream(Constants.Path_TestData));
-			logger.info("Data: " + sResult + "\n\n" + " written successfully on: "
-					+ Constants.File_TestData + " - " + sSheetName);
+			logger.info("Data: [" + sResult + "]" + "\n\n" + " written successfully on: ["
+					+ Constants.File_TestData + "]" + " - [" + sSheetName + "]");
 		} catch (Exception e) {
-			logger.error("ExcelUtils|setCellData. Exception Message - " + e.getMessage());
+			logger.error(" * ExcelUtils|setCellData. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}
