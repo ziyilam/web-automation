@@ -138,8 +138,9 @@ public class ActionKeywords {
 			int iSplit2 = iSplit-1;
 			logger.info("iSplit2: [" + iSplit2 + "]");
 			DriverScript.sCompareText = aWords[iSplit2];
-			ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestStep, Constants.Col_TestData, Constants.Sheet_TestSteps);
-			int iCellHeader = DriverScript.iCellHeaderIndex + 1;
+			//ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestStep, Constants.Col_TestData, Constants.Sheet_TestSteps);
+			int iCellHeader = DriverScript.iCellHeaderIndex;
+			//int iCellHeader = DriverScript.iCellHeaderIndex + 1;
 			ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestData, iCellHeader, Constants.Sheet_TestData);
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|getValueNSetCell. Exception Message - " + e.getMessage());
