@@ -34,8 +34,9 @@ public class ActionKeywords {
 	
 	private static void splitString (String sInput, int iSplit) {
 		try {
-			//int iSplit = Integer.parseInt(sSplit);
-			aWords = sInput.split("\\s", iSplit);
+			// split the words according to the word count
+			int iSplit2 = iSplit + 1;
+			aWords = sInput.split("\\s", iSplit2);
 			for(String w:aWords) {
 				logger.info("w: " + w);
 				}
@@ -126,21 +127,18 @@ public class ActionKeywords {
 	public void getValueNSetCell(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			getAllKindsOfText (sObjectLocator);
-			/*String sText = driver.findElement(By.xpath(sObjectLocator)).getAttribute("value");
-			logger.info("text: " + sText);*/
 			logger.info("iTestcase: [" + DriverScript.iCountTestStep + "]");
-			//splitString (DriverScript.sCompareText, 3);
-			//DriverScript.sCompareText = aWords[2];
 			logger.info("sAdditionalRequest: [" + sAdditionalRequest + "]");
 			int iSplit = Integer.parseInt(sAdditionalRequest);
 			logger.info("iSplit: [" + iSplit + "]");
 			splitString (DriverScript.sCompareText,iSplit);
+			// display the correct word because of the zero originated counting
 			int iSplit2 = iSplit-1;
 			logger.info("iSplit2: [" + iSplit2 + "]");
 			DriverScript.sCompareText = aWords[iSplit2];
 			//ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestStep, Constants.Col_TestData, Constants.Sheet_TestSteps);
+			// control the excel column to insert the word
 			int iCellHeader = DriverScript.iCellHeaderIndex;
-			//int iCellHeader = DriverScript.iCellHeaderIndex + 1;
 			ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestData, iCellHeader, Constants.Sheet_TestData);
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|getValueNSetCell. Exception Message - " + e.getMessage());
