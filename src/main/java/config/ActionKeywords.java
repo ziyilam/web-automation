@@ -1,5 +1,9 @@
 package config;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
@@ -146,6 +150,25 @@ public class ActionKeywords {
 		}
 	}
 	
+	public void copyAndPaste (String sObjectLocator, String sTestData, String sAdditionalRequest) {
+		try {
+			splitString (sObjectLocator, 2);
+			int iRow, iCol;
+			iRow = Integer.parseInt(aWords[0]);
+			iCol = Integer.parseInt(aWords[1]);
+			String sData = ExcelUtils.getCellData(iRow, iCol, Constants.Sheet_TestData);
+			
+			splitString (sTestData, 2);
+			iRow = Integer.parseInt(aWords[0]);
+			iCol = Integer.parseInt(aWords[1]);
+			ExcelUtils.setCellData(sData, iRow, iCol, Constants.Sheet_TestData);
+			
+		} catch (Exception e) {
+			logger.error(" * ActionKeywords|copyAndPaste. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
+	}
+	
 	public void openBrowser(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			switch (sTestData.toLowerCase()) {
@@ -194,11 +217,16 @@ public class ActionKeywords {
 		}
 	}
 
-	public void tryClick(String sObjectLocator, String sTestData, String sAdditionalRequest) {
+	public void tryClick(String sObjectLocator, String sTestData, String sAdditionalRequest)throws InterruptedException {
 		
 			try {
 				logger.info("Action......Clicking on ObjectLocator [" + sObjectLocator + "]");
-				driver.findElement(By.xpath(sObjectLocator)).click();
+				WebElement wObject = driver.findElement(By.xpath(sObjectLocator));
+				// waiting for another thread with duties that are understood to have time requirements
+				Thread.sleep(10);
+				wObject.click();
+				Thread.sleep(10);
+				//driver.findElement(By.xpath(sObjectLocator)).click();
 				//source = driver.findElement(By.xpath(sObjectLocator));
 				//if(source.isEnabled())
 			} catch (Exception e) {
@@ -207,11 +235,16 @@ public class ActionKeywords {
 			}
 	}
 
-	public void tryInput(String sObjectLocator, String sTestData, String sAdditionalRequest) {
+	public void tryInput(String sObjectLocator, String sTestData, String sAdditionalRequest)throws InterruptedException {
 		try {
 			logger.info("Action......Input the text into ObjectLocator: [" + sObjectLocator + "]");
 			// driver.findElement(By.cssSelector(sObjectLocator)).sendKeys(sTestData);
-			driver.findElement(By.xpath(sObjectLocator)).sendKeys(sTestData);
+			WebElement wObject = driver.findElement(By.xpath(sObjectLocator));
+			// waiting for another thread with duties that are understood to have time requirements
+			Thread.sleep(10);
+			wObject.sendKeys(sTestData);
+			Thread.sleep(10);
+			// driver.findElement(By.xpath(sObjectLocator)).sendKeys(sTestData);
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|tryInput. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
@@ -230,12 +263,44 @@ public class ActionKeywords {
 		// System.exit(0);
 	}
 	
+	public void openTab (String sObjectLocator, String sTestData, String sAdditionalRequest) throws InterruptedException {
+		try {
+			// open new tab
+			Robot robot = new Robot();
+			robot.keyPress(KeyEvent.VK_CONTROL);
+			robot.keyPress(KeyEvent.VK_T);
+			robot.keyRelease(KeyEvent.VK_CONTROL);
+			robot.keyRelease(KeyEvent.VK_T);
+			robot.delay(500);
+			// switch to the new tab
+			trySwitch("", "1", "");
+			/*for(String handle : driver.getWindowHandles()) {
+				driver.switchTo().window(handle);
+				logger.info(" windowHandle: [" + handle + "]");
+			}*/
+			//ArrayList<String> sTab = new ArrayList<String>(driver.getWindowHandles());
+			//driver.switchTo().window(sTab.get(1));
+			// to navigate to new URl in the new tab
+			driver.get(sObjectLocator);
+		} catch (AWTException e) {
+			logger.error(" * ActionKeywords|openTab. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
+		
+	}
+	
 	public void trySwitch(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			for(String handle : driver.getWindowHandles()) {
-				driver.switchTo().window(handle);
+				//driver.switchTo().window(handle);
 				logger.info(" windowHandle: [" + handle + "]");
 			}
+			ArrayList<String> sTab = new ArrayList<String>(driver.getWindowHandles());
+			int iHandle = Integer.parseInt(sTestData);
+			driver.switchTo().window(sTab.get(iHandle));
+			// waiting for another thread with duties that are understood to have time requirements
+			Thread.sleep(1000);
+			logger.info(" switch to Handle: [" + iHandle + "]");
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|trySwitch. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;

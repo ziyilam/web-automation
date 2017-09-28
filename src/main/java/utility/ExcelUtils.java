@@ -38,10 +38,14 @@ public class ExcelUtils {
 			
 			ExcelWSheet = ExcelWBook.getSheet(SheetName);
 			Cell = ExcelWSheet.getRow(RowNum).getCell(ColNum);
-			
-			if(!Cell.getStringCellValue().isEmpty()) {
+			// waiting for another thread with duties that are understood to have time requirements
+			Thread.sleep(10);
+			CellData = Cell.getStringCellValue();
+			// waiting for another thread with duties that are understood to have time requirements
+			Thread.sleep(10);
+			/*if(!Cell.getStringCellValue().isEmpty()) {
 				CellData = Cell.getStringCellValue();
-			}
+			}*/
 			return CellData;
 			
 
