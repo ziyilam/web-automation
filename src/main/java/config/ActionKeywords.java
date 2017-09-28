@@ -221,6 +221,7 @@ public class ActionKeywords {
 		
 			try {
 				logger.info("Action......Clicking on ObjectLocator [" + sObjectLocator + "]");
+				Thread.sleep(10);
 				WebElement wObject = driver.findElement(By.xpath(sObjectLocator));
 				// waiting for another thread with duties that are understood to have time requirements
 				Thread.sleep(10);
@@ -254,8 +255,16 @@ public class ActionKeywords {
 	public void tryClose(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			logger.info("Action......Closing the browser");
-			driver.close();
-			// driver.quit();
+			switch (sTestData.toLowerCase()) {
+			case "all":
+				driver.quit();
+				break;
+
+			default:
+				driver.close();
+				break;
+			}
+			
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|tryClose. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
@@ -271,9 +280,9 @@ public class ActionKeywords {
 			robot.keyPress(KeyEvent.VK_T);
 			robot.keyRelease(KeyEvent.VK_CONTROL);
 			robot.keyRelease(KeyEvent.VK_T);
-			robot.delay(500);
+			robot.delay(10);
 			// switch to the new tab
-			trySwitch("", "1", "");
+			trySwitch("", "second", "");
 			/*for(String handle : driver.getWindowHandles()) {
 				driver.switchTo().window(handle);
 				logger.info(" windowHandle: [" + handle + "]");
@@ -296,10 +305,25 @@ public class ActionKeywords {
 				logger.info(" windowHandle: [" + handle + "]");
 			}
 			ArrayList<String> sTab = new ArrayList<String>(driver.getWindowHandles());
-			int iHandle = Integer.parseInt(sTestData);
+			int iHandle = 0;
+			switch (sTestData.toLowerCase()) {
+			case "first":
+				iHandle = 0;
+				break;
+			case "second":
+				iHandle = 1;
+				break;
+			case "third":
+				iHandle = 2;
+				break;
+			default:
+				iHandle = 0;
+				break;
+			}
+			//int iHandle = Integer.parseInt(sTestData);
 			driver.switchTo().window(sTab.get(iHandle));
 			// waiting for another thread with duties that are understood to have time requirements
-			Thread.sleep(1000);
+			Thread.sleep(10);
 			logger.info(" switch to Handle: [" + iHandle + "]");
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|trySwitch. Exception Message - " + e.getMessage());
