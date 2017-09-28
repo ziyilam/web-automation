@@ -47,8 +47,7 @@ public class ExcelUtils {
 				CellData = Cell.getStringCellValue();
 			}*/
 			return CellData;
-			
-
+		
 		} catch (Exception e) {
 			logger.warn(" * No Cell Data is found and return [NULL]");
 			return "NULL";
