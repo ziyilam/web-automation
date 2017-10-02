@@ -469,6 +469,9 @@ public class ActionKeywords {
 			case "clickable":
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(sObjectLocator)));
 				break;
+			case "sleep":
+				Thread.sleep(30);
+				break;
 			default:
 				wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(sObjectLocator)));
 				break;
