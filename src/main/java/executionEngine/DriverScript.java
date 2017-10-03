@@ -80,7 +80,7 @@ public class DriverScript {
 			iLastTestStep = ExcelUtils.getStepsCount(Constants.Sheet_TestSteps, sTestCaseID, iStartTestStep);
 			if(!ExcelUtils.getCellData(iStartTestStep, Constants.Col_StepResults, Constants.Sheet_TestSteps).isEmpty()) {
 			for(;iStartTestStep<=iLastTestStep;iStartTestStep++) {
-				logger.info("Clearing old result data for [TS_" + iStartTestStep + "]");
+				logger.info("Clearing old result data for TestStep: [" + iStartTestStep + "]");
 				ExcelUtils.setCellData(Constants.KEYWORD_EMPTY, iStartTestStep, Constants.Col_StepResults,Constants.Sheet_TestSteps);
 			}
 			}
@@ -189,12 +189,12 @@ public class DriverScript {
 					logger.info("Executed TestData Item: [" + sTestDataItem + "]");
 					if (bResult == true) {
 
-						logger.info("bResult: [" + bResult + "]" + " for [TS_" + iCountTestStep + "]");
+						logger.info("bResult: [" + bResult + "]" + " for [" + sTestStepID + "]");
 						ExcelUtils.setCellData(Constants.KEYWORD_PASS, iCountTestStep, Constants.Col_StepResults,
 								Constants.Sheet_TestSteps);
 						break;
 					} else {
-						logger.info("bResult: [" + bResult + "]" + " for [TS_" + iCountTestStep + "]");
+						logger.info("bResult: [" + bResult + "]" + " for [" + sTestStepID + "]");
 						ExcelUtils.setCellData(Constants.KEYWORD_FAIL, iCountTestStep, Constants.Col_StepResults,
 								Constants.Sheet_TestSteps);
 						break;

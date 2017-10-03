@@ -244,7 +244,7 @@ public class ActionKeywords {
 		
 			try {
 				logger.info("Action......Clicking on ObjectLocator [" + sObjectLocator + "]");
-				Thread.sleep(10);
+				//Thread.sleep(10);
 				WebElement wObject = driver.findElement(By.xpath(sObjectLocator));
 				// waiting for another thread with duties that are understood to have time requirements
 				Thread.sleep(10);
@@ -346,7 +346,7 @@ public class ActionKeywords {
 			//int iHandle = Integer.parseInt(sTestData);
 			driver.switchTo().window(sTab.get(iHandle));
 			// waiting for another thread with duties that are understood to have time requirements
-			Thread.sleep(100);
+			Thread.sleep(30);
 			logger.info(" switch to Handle: [" + iHandle + "]");
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|trySwitch. Exception Message - " + e.getMessage());
