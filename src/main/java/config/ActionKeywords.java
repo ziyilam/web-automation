@@ -40,9 +40,10 @@ public class ActionKeywords {
 		try {
 			// split the words according to the word count
 			int iSplit2 = iSplit + 1;
+			logger.info("split sentence into: [" + iSplit + "]");
 			aWords = sInput.split("\\s", iSplit2);
 			for(String w:aWords) {
-				logger.info("w: " + w);
+				logger.info("split string: [" + w + "]");
 				}
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|splitString. Exception Message - " + e.getMessage());
@@ -92,7 +93,7 @@ public class ActionKeywords {
 			splitString(sAdditionalRequest, 2);
 			// first word is to decide number of words to split
 			int iSplit = Integer.parseInt(aWords[0]);
-			logger.info("iSplit: [" + iSplit + "]");
+			
 			// second word is the word choose to set into the cell
 			int iSplit2 = Integer.parseInt(aWords[1]);
 			// count from 1
@@ -100,7 +101,7 @@ public class ActionKeywords {
 			//int iSplit = Integer.parseInt(sAdditionalRequest);
 			splitString (DriverScript.sCompareText,iSplit);
 			//int iSplit2 = iSplit-1;
-			logger.info("iSplit2: [" + iSplit2 + "]");
+			logger.info("chosen word no: [" + iSplit2 + "]");
 			DriverScript.sCompareText = aWords[iSplit2];
 			
 			String sInput = sTestData;
@@ -153,7 +154,7 @@ public class ActionKeywords {
 			splitString(sAdditionalRequest, 2);
 			// first word is to decide number of words to split
 			int iSplit = Integer.parseInt(aWords[0]);
-			logger.info("iSplit: [" + iSplit + "]");
+			
 			// second word is the word choose to set into the cell
 			int iSplit2 = Integer.parseInt(aWords[1]);
 			// count from 1
@@ -161,7 +162,7 @@ public class ActionKeywords {
 			//int iSplit = Integer.parseInt(sAdditionalRequest);
 			splitString (DriverScript.sCompareText,iSplit);
 			//int iSplit2 = iSplit-1;
-			logger.info("iSplit2: [" + iSplit2 + "]");
+			logger.info("chosen word no: [" + iSplit2 + "]");
 			DriverScript.sCompareText = aWords[iSplit2];
 			//ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestStep, Constants.Col_TestData, Constants.Sheet_TestSteps);
 			// control the excel column to insert the word
@@ -493,7 +494,7 @@ public class ActionKeywords {
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(sObjectLocator)));
 				break;
 			case "sleep":
-				Thread.sleep(30);
+				Thread.sleep(2000);
 				break;
 			default:
 				wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(sObjectLocator)));
