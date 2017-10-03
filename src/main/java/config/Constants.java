@@ -32,5 +32,6 @@ public class Constants {
 	public static final String Sheet_TestData = "TestData";
 	public static final String KEYWORD_FAIL = "FAIL";
 	public static final String KEYWORD_PASS = "PASS";
+	public static final String KEYWORD_EMPTY = "";
 
 }

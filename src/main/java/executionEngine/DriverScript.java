@@ -68,6 +68,22 @@ public class DriverScript {
 			sRunMode = ExcelUtils.getCellData(iTestcase, Constants.Col_RunMode, Constants.Sheet_TestCases);
 			logger.info("\n\nsRunMode: [" + sRunMode + "]"
 					+ "\n\n\n");
+			// clear previous data in Test Case Results column
+			if(!ExcelUtils.getCellData(iTestcase, Constants.Col_CaseResults, Constants.Sheet_TestCases).isEmpty()) {
+			logger.info("Clearing old result data for TestCase: [" + sTestCaseID + "]");
+			ExcelUtils.setCellData(Constants.KEYWORD_EMPTY, iTestcase, Constants.Col_CaseResults,
+					Constants.Sheet_TestCases);
+			}
+			// clear previous data in Test Step Result column
+			iStartTestStep = ExcelUtils.getRowStartWith(sTestCaseID, Constants.Col_TestCaseID,
+					Constants.Sheet_TestSteps);
+			iLastTestStep = ExcelUtils.getStepsCount(Constants.Sheet_TestSteps, sTestCaseID, iStartTestStep);
+			if(!ExcelUtils.getCellData(iStartTestStep, Constants.Col_StepResults, Constants.Sheet_TestSteps).isEmpty()) {
+			for(;iStartTestStep<=iLastTestStep;iStartTestStep++) {
+				logger.info("Clearing old result data for [TS_" + iStartTestStep + "]");
+				ExcelUtils.setCellData(Constants.KEYWORD_EMPTY, iStartTestStep, Constants.Col_StepResults,Constants.Sheet_TestSteps);
+			}
+			}
 			// Only execute the test case with run mode equals to yes
 			if (sRunMode.equalsIgnoreCase("Yes")) {
 				//startTestCase
@@ -103,6 +119,7 @@ public class DriverScript {
 						
 						logger.info("TestStep row no.: [" + iCountTestStep + "]");
 						
+						
 						// get all data from test step columns, need iCountTestStep
 						fetch_TestSteps(iCountTestStep);
 								
@@ -125,6 +142,7 @@ public class DriverScript {
 						}
 
 					}
+					
 					// Record test case pass, need iTestcase
 					if (bResult == true) {
 						ExcelUtils.setCellData(Constants.KEYWORD_PASS, iTestcase, Constants.Col_CaseResults,
@@ -171,12 +189,12 @@ public class DriverScript {
 					logger.info("Executed TestData Item: [" + sTestDataItem + "]");
 					if (bResult == true) {
 
-						logger.info("bResult: [" + bResult + "]" + " for iStartTestStep: [" + iCountTestStep + "]");
+						logger.info("bResult: [" + bResult + "]" + " for [TS_" + iCountTestStep + "]");
 						ExcelUtils.setCellData(Constants.KEYWORD_PASS, iCountTestStep, Constants.Col_StepResults,
 								Constants.Sheet_TestSteps);
 						break;
 					} else {
-						logger.info("bResult:...[" + bResult + "]" + "...for iStartTestStep:...[" + iCountTestStep + "]");
+						logger.info("bResult: [" + bResult + "]" + " for [TS_" + iCountTestStep + "]");
 						ExcelUtils.setCellData(Constants.KEYWORD_FAIL, iCountTestStep, Constants.Col_StepResults,
 								Constants.Sheet_TestSteps);
 						break;
@@ -185,9 +203,9 @@ public class DriverScript {
 
 			}
 			if (bKeyword == false) {
-				logger.warn("......No such action keyword......[" + sActionKeyword + "]");
+				logger.warn("......No such action keyword of: [" + sActionKeyword + "]");
 				bResult = false;
-				logger.info("bResult:...[" + bResult + "]" + "...for iStartTestStep:...[" + iCountTestStep + "]");
+				logger.info("bResult: [" + bResult + "]" + " [TS_" + iCountTestStep + "]");
 				ExcelUtils.setCellData(Constants.KEYWORD_FAIL, iCountTestStep, Constants.Col_StepResults,
 						Constants.Sheet_TestSteps);
 			}

@@ -85,8 +85,24 @@ public class ActionKeywords {
 		try {
 			Boolean bNot=false;
 			logger.info("Action......Try Verify text");
+			// get the text to verify
 			getAllKindsOfText (sObjectLocator);
-					
+			
+			// split AdditionalRequest into 2 words
+			splitString(sAdditionalRequest, 2);
+			// first word is to decide number of words to split
+			int iSplit = Integer.parseInt(aWords[0]);
+			logger.info("iSplit: [" + iSplit + "]");
+			// second word is the word choose to set into the cell
+			int iSplit2 = Integer.parseInt(aWords[1]);
+			// count from 1
+			iSplit2 = iSplit2 - 1;
+			//int iSplit = Integer.parseInt(sAdditionalRequest);
+			splitString (DriverScript.sCompareText,iSplit);
+			//int iSplit2 = iSplit-1;
+			logger.info("iSplit2: [" + iSplit2 + "]");
+			DriverScript.sCompareText = aWords[iSplit2];
+			
 			String sInput = sTestData;
 			splitString(sInput, 2);
 			//String[] aWords = sInput.split("\\s",2);
@@ -133,11 +149,18 @@ public class ActionKeywords {
 			getAllKindsOfText (sObjectLocator);
 			logger.info("iTestcase: [" + DriverScript.iCountTestStep + "]");
 			logger.info("sAdditionalRequest: [" + sAdditionalRequest + "]");
-			int iSplit = Integer.parseInt(sAdditionalRequest);
+			// split AdditionalRequest into 2 words
+			splitString(sAdditionalRequest, 2);
+			// first word is to decide number of words to split
+			int iSplit = Integer.parseInt(aWords[0]);
 			logger.info("iSplit: [" + iSplit + "]");
+			// second word is the word choose to set into the cell
+			int iSplit2 = Integer.parseInt(aWords[1]);
+			// count from 1
+			iSplit2 = iSplit2 - 1;
+			//int iSplit = Integer.parseInt(sAdditionalRequest);
 			splitString (DriverScript.sCompareText,iSplit);
-			// display the correct word because of the zero originated counting
-			int iSplit2 = iSplit-1;
+			//int iSplit2 = iSplit-1;
 			logger.info("iSplit2: [" + iSplit2 + "]");
 			DriverScript.sCompareText = aWords[iSplit2];
 			//ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestStep, Constants.Col_TestData, Constants.Sheet_TestSteps);
@@ -323,7 +346,7 @@ public class ActionKeywords {
 			//int iHandle = Integer.parseInt(sTestData);
 			driver.switchTo().window(sTab.get(iHandle));
 			// waiting for another thread with duties that are understood to have time requirements
-			Thread.sleep(10);
+			Thread.sleep(100);
 			logger.info(" switch to Handle: [" + iHandle + "]");
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|trySwitch. Exception Message - " + e.getMessage());
