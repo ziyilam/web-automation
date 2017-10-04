@@ -38,7 +38,7 @@ public class ActionKeywords {
 	
 	private static void splitString (String sInput, int iSplit) {
 		try {
-			// split the words according to the word count
+			// split the words according to the word count. plus 1 to count start from 1 instead of 0
 			int iSplit2 = iSplit + 1;
 			logger.info("split sentence into: [" + iSplit + "]");
 			aWords = sInput.split("\\s", iSplit2);
@@ -53,6 +53,8 @@ public class ActionKeywords {
 	
 	private static void getAllKindsOfText (String sObjectLocator) {
 		try {
+			// clear old string in the memory
+			DriverScript.sCompareText = "";
 			String sText = driver.findElement(By.xpath(sObjectLocator)).getText();
 			String sValue = driver.findElement(By.xpath(sObjectLocator)).getAttribute("value");
 			String sPlaceholder = driver.findElement(By.xpath(sObjectLocator)).getAttribute("placeholder");
@@ -61,19 +63,19 @@ public class ActionKeywords {
 			if (sText.length()!=0) {
 				iType = 0;
 				DriverScript.sCompareText = sText;
-				logger.info("Text: [" + sText + "]" + " iType: [" + iType + "]");
+				logger.info("Text grabbed: [" + sText + "]" + " iType: [" + iType + "]");
 			} else if (sValue.length()!=0) {
 				iType = 1;
 				DriverScript.sCompareText = sValue;
-				logger.info("Value: [" + sValue + "]" + " iType: [" + iType + "]");
+				logger.info("Value grabbed: [" + sValue + "]" + " iType: [" + iType + "]");
 			} else if (sPlaceholder.length()!=0){
 				iType = 2;
 				DriverScript.sCompareText = sPlaceholder;
-				logger.info("Placeholder: [" + sPlaceholder + "]" + " iType: [" + iType + "]");
+				logger.info("Placeholder grabbed: [" + sPlaceholder + "]" + " iType: [" + iType + "]");
 			} else if (sfieldTitle.length()!=0){
 				iType = 2;
 				DriverScript.sCompareText = sfieldTitle;
-				logger.info("fieldTitle: [" + sfieldTitle + "]" + " iType: [" + iType + "]");
+				logger.info("fieldTitle grabbed: [" + sfieldTitle + "]" + " iType: [" + iType + "]");
 			}
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|getAllKindsOfText. Exception Message - " + e.getMessage());
@@ -86,6 +88,7 @@ public class ActionKeywords {
 		try {
 			Boolean bNot=false;
 			logger.info("Action......Try Verify text");
+
 			// get the text to verify
 			getAllKindsOfText (sObjectLocator);
 			
@@ -96,7 +99,7 @@ public class ActionKeywords {
 			
 			// second word is the word choose to set into the cell
 			int iSplit2 = Integer.parseInt(aWords[1]);
-			// count from 1
+			// count from 1 instead of 0
 			iSplit2 = iSplit2 - 1;
 			//int iSplit = Integer.parseInt(sAdditionalRequest);
 			splitString (DriverScript.sCompareText,iSplit);
@@ -147,6 +150,7 @@ public class ActionKeywords {
 	
 	public void getValueNSetCell(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
+
 			getAllKindsOfText (sObjectLocator);
 			logger.info("iTestcase: [" + DriverScript.iCountTestStep + "]");
 			logger.info("sAdditionalRequest: [" + sAdditionalRequest + "]");
