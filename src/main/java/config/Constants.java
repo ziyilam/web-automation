@@ -28,9 +28,13 @@ public class Constants {
 	public static final int Col_TestStepID = 6;
 	public static final int Col_StepResults = 7;
 	
+	public static final int Col_stk_name = 1;
+	public static final int Col_EPS = 3;
+	
 	public static final String Sheet_TestCases = "TestCases";
 	public static final String Sheet_TestSteps = "TestSteps";
 	public static final String Sheet_TestData = "TestData";
+	public static final String Sheet_Stock = "Stock";
 	public static final String KEYWORD_FAIL = " * FAIL";
 	public static final String KEYWORD_PASS = "PASS";
 	public static final String KEYWORD_EMPTY = "";

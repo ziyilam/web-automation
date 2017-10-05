@@ -35,23 +35,29 @@ public class ActionKeywords {
 	private static WebElement target;
 	private static final Logger logger = LogManager.getLogger(ActionKeywords.class.getName());
 	private static String[] aWords;
-	
-	private static void splitString (String sInput, int iSplit) {
+	private static int iNameCount = 1;
+	private static String sCol;
+	private static boolean bTryLoop = true;
+
+	private static void splitString(String sInput, int iSplit) {
 		try {
-			// split the words according to the word count. plus 1 to count start from 1 instead of 0
+
+			// split the words according to the word count. plus 1 to count start from 1
+			// instead of 0
 			int iSplit2 = iSplit + 1;
 			logger.info("split sentence into: [" + iSplit + "]");
+			logger.info("iSplit2: [" + iSplit2 + "]");
 			aWords = sInput.split("\\s", iSplit2);
-			for(String w:aWords) {
+			for (String w : aWords) {
 				logger.info("split string: [" + w + "]");
-				}
+			}
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|splitString. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}
-	
-	private static void getAllKindsOfText (String sObjectLocator) {
+
+	private static void getAllKindsOfText(String sObjectLocator) {
 		try {
 			// clear old string in the memory
 			DriverScript.sCompareText = "";
@@ -60,19 +66,19 @@ public class ActionKeywords {
 			String sPlaceholder = driver.findElement(By.xpath(sObjectLocator)).getAttribute("placeholder");
 			String sfieldTitle = driver.findElement(By.xpath(sObjectLocator)).getAttribute("field-title");
 			int iType = 0;
-			if (sText.length()!=0) {
+			if (sText.length() != 0) {
 				iType = 0;
 				DriverScript.sCompareText = sText;
 				logger.info("Text grabbed: [" + sText + "]" + " iType: [" + iType + "]");
-			} else if (sValue.length()!=0) {
+			} else if (sValue.length() != 0) {
 				iType = 1;
 				DriverScript.sCompareText = sValue;
 				logger.info("Value grabbed: [" + sValue + "]" + " iType: [" + iType + "]");
-			} else if (sPlaceholder.length()!=0){
+			} else if (sPlaceholder.length() != 0) {
 				iType = 2;
 				DriverScript.sCompareText = sPlaceholder;
 				logger.info("Placeholder grabbed: [" + sPlaceholder + "]" + " iType: [" + iType + "]");
-			} else if (sfieldTitle.length()!=0){
+			} else if (sfieldTitle.length() != 0) {
 				iType = 2;
 				DriverScript.sCompareText = sfieldTitle;
 				logger.info("fieldTitle grabbed: [" + sfieldTitle + "]" + " iType: [" + iType + "]");
@@ -80,141 +86,263 @@ public class ActionKeywords {
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|getAllKindsOfText. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
+
 		}
 	}
-	
+
 	public void tryVerify(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 
 		try {
-			Boolean bNot=false;
+			Boolean bNot = false;
 			logger.info("Action......Try Verify text");
 
 			// get the text to verify
-			getAllKindsOfText (sObjectLocator);
-			
-			// split AdditionalRequest into 2 words
-			splitString(sAdditionalRequest, 2);
-			// first word is to decide number of words to split
-			int iSplit = Integer.parseInt(aWords[0]);
-			
-			// second word is the word choose to set into the cell
-			int iSplit2 = Integer.parseInt(aWords[1]);
-			// count from 1 instead of 0
-			iSplit2 = iSplit2 - 1;
-			//int iSplit = Integer.parseInt(sAdditionalRequest);
-			splitString (DriverScript.sCompareText,iSplit);
-			//int iSplit2 = iSplit-1;
-			logger.info("chosen word no: [" + iSplit2 + "]");
-			DriverScript.sCompareText = aWords[iSplit2];
-			
+			getAllKindsOfText(sObjectLocator);
+
+			// choose which word to verify
+			splitAndChoose(sAdditionalRequest);
+
 			String sInput = sTestData;
 			splitString(sInput, 2);
-			//String[] aWords = sInput.split("\\s",2);
-			for(String w:aWords) {
+			// String[] aWords = sInput.split("\\s",2);
+			for (String w : aWords) {
 				logger.info("w: [" + w + "]");
-				if(w.equalsIgnoreCase("not")) {
-					bNot=true;
+				if (w.equalsIgnoreCase("not")) {
+					bNot = true;
 					break;
 				}
 			}
-			if(bNot==false) {
+			if (bNot == false) {
 				if (DriverScript.sCompareText.equalsIgnoreCase(sTestData)) {
-					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + sTestData + "]");
-					//logger.info("Value is: [" + sValue + "] compared with expected: [" + sTestData + "]");
+					logger.info(
+							"Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + sTestData + "]");
+					// logger.info("Value is: [" + sValue + "] compared with expected: [" +
+					// sTestData + "]");
 					logger.info(" Text verified to be the SAME ");
 				} else {
 					DriverScript.bResult = false;
-					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + sTestData + "]");
-					//logger.info("Value is: [" + sValue + "] compared with expected: [" + sTestData + "]");
+					logger.info(
+							"Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + sTestData + "]");
+					// logger.info("Value is: [" + sValue + "] compared with expected: [" +
+					// sTestData + "]");
 					logger.info("Text verified NOT the same");
 				}
 			} else {
 				if (!DriverScript.sCompareText.equalsIgnoreCase(aWords[1])) {
-					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + aWords[1] + "]");
-					//logger.info("Value is: [" + sValue + "] compared with expected: [" + aWords[1] + "]");
+					logger.info(
+							"Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + aWords[1] + "]");
+					// logger.info("Value is: [" + sValue + "] compared with expected: [" +
+					// aWords[1] + "]");
 					logger.info(" Text verified NOT the same ");
 				} else {
 					DriverScript.bResult = false;
-					logger.info("Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + aWords[1] + "]");
-					//logger.info("Value is: [" + sValue + "] compared with expected: [" + aWords[1] + "]");
+					logger.info(
+							"Text is: [" + DriverScript.sCompareText + "] compared with expected: [" + aWords[1] + "]");
+					// logger.info("Value is: [" + sValue + "] compared with expected: [" +
+					// aWords[1] + "]");
 					logger.info(" Text verified to be the SAME ");
 				}
 			}
-			
 
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|tryVerify. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void getValueNSetCell(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 
-			getAllKindsOfText (sObjectLocator);
+			getAllKindsOfText(sObjectLocator);
 			logger.info("iTestcase: [" + DriverScript.iCountTestStep + "]");
 			logger.info("sAdditionalRequest: [" + sAdditionalRequest + "]");
-			// split AdditionalRequest into 2 words
-			splitString(sAdditionalRequest, 2);
-			// first word is to decide number of words to split
-			int iSplit = Integer.parseInt(aWords[0]);
-			
-			// second word is the word choose to set into the cell
-			int iSplit2 = Integer.parseInt(aWords[1]);
-			// count from 1
-			iSplit2 = iSplit2 - 1;
-			//int iSplit = Integer.parseInt(sAdditionalRequest);
-			splitString (DriverScript.sCompareText,iSplit);
-			//int iSplit2 = iSplit-1;
-			logger.info("chosen word no: [" + iSplit2 + "]");
-			DriverScript.sCompareText = aWords[iSplit2];
-			//ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestStep, Constants.Col_TestData, Constants.Sheet_TestSteps);
+
+			// choose which word to get
+			splitAndChoose(sAdditionalRequest);
+
+			// ExcelUtils.setCellData(DriverScript.sCompareText,
+			// DriverScript.iCountTestStep, Constants.Col_TestData,
+			// Constants.Sheet_TestSteps);
 			// control the excel column to insert the word
 			int iCellHeader = DriverScript.iCellHeaderIndex;
-			ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestData, iCellHeader, Constants.Sheet_TestData);
+			ExcelUtils.setCellData(DriverScript.sCompareText, DriverScript.iCountTestData, iCellHeader,
+					Constants.Sheet_TestData);
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|getValueNSetCell. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}
-	
-	public void copyAndPaste (String sObjectLocator, String sTestData, String sAdditionalRequest) {
+
+	public void tryLoop(String sObjectLocator, String sTestData, String sAdditionalRequest) {
+
 		try {
-			splitString (sObjectLocator, 2);
+			// read excel to get all names
+			do {
+				getAndInput(sObjectLocator, sTestData, sAdditionalRequest);
+				
+				getAndPaste(sObjectLocator, sTestData, sAdditionalRequest);
+				logger.info("continue loop (true/false): [" + bTryLoop + "]");
+				// go back to the search page
+				tryNavigate(sObjectLocator, "back", sAdditionalRequest);
+				logger.info("[navigate back]");
+			} while (bTryLoop);
+			logger.info("[break tryLoop]");
+
+		} catch (Exception e) {
+			logger.error(" * ActionKeywords|tryLoop. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
+	}
+
+	private void getAndInput(String sObjectLocator, String sTestData, String sAdditionalRequest) {
+
+		try {
+
+			// get name from excel
+			logger.info("getting name no.: [" + iNameCount + "]");
+			String sData = ExcelUtils.getCellData(iNameCount, Constants.Col_stk_name, Constants.Sheet_Stock);
+			sData = sData.toUpperCase();
+			logger.info("stock name: [" + sData + "]");
+
+			// input the name into web element
+
+			if (sData == "NULL") {
+				bTryLoop = false;
+			} else {
+				tryInput(sObjectLocator, sData, sAdditionalRequest);
+				Robot robot = new Robot();
+				robot.keyPress(KeyEvent.VK_ENTER);
+				robot.keyRelease(KeyEvent.VK_ENTER);
+				robot.delay(10);
+			}
+
+		} catch (Exception e) {
+			logger.error(" * ActionKeywords|getAndInput. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
+		// logger.info("name exist (true/fase): [" + bTryLoop + "]");
+
+	}
+
+	private void getAndPaste(String sObjectLocator, String sTestData, String sAdditionalRequest) {
+		try {
+			if (bTryLoop) {
+			// get data from web element
+			getAllKindsOfText(sTestData);
+			// choose which word to paste
+			splitAndChoose2(sAdditionalRequest);
+			int iCol;
+			// paste the data to the excel
+			logger.info("column chosen: [" + sCol + "]");
+			switch (sCol) {
+			case "EPS":
+				iCol = Constants.Col_EPS;
+				break;
+
+			default:
+				iCol = Constants.Col_EPS;
+				break;
+			}
+			ExcelUtils.setCellData(DriverScript.sCompareText, iNameCount, iCol, Constants.Sheet_Stock);
+			// increase the count after it has been pasted into the excel
+			iNameCount++;
+			logger.info("name count increased to: [" + iNameCount + "]");
+			} else {
+				logger.info("[skip getAndPaste]");
+			}
+		} catch (Exception e) {
+			logger.error(" * ActionKeywords|getAndPaste. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+			bTryLoop = false;
+		}
+	}
+
+	private static void splitAndChoose(String sAdditionalRequest) {
+		try {
+			// split AdditionalRequest into 2 words
+			splitString(sAdditionalRequest, 2);
+			// first word is to decide number of words to split
+			int iSplit = Integer.parseInt(aWords[0]);
+			// second word is the word choose to set into the cell
+			int iSplit2 = Integer.parseInt(aWords[1]);
+			// third word is the column name in the Stock sheet saved in aWords[2]
+			//sCol = aWords[2];
+			// count from 1 instead of 0
+			iSplit2 = iSplit2 - 1;
+
+			// split the words from web element
+			splitString(DriverScript.sCompareText, iSplit);
+
+			DriverScript.sCompareText = aWords[iSplit2];
+			logger.info("chosen word no: [" + iSplit2 + "]");
+
+		} catch (NumberFormatException e) {
+			logger.error(" * ActionKeywords|splitAndChoose. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
+	}
+	private static void splitAndChoose2(String sAdditionalRequest) {
+		try {
+			// split AdditionalRequest into 3 words
+			splitString(sAdditionalRequest, 3);
+			// first word is to decide number of words to split
+			int iSplit = Integer.parseInt(aWords[0]);
+			// second word is the word choose to set into the cell
+			int iSplit2 = Integer.parseInt(aWords[1]);
+			// third word is the column name in the Stock sheet saved in aWords[2]
+			sCol = aWords[2];
+			// count from 1 instead of 0
+			iSplit2 = iSplit2 - 1;
+
+			// split the words from web element
+			splitString(DriverScript.sCompareText, iSplit);
+
+			DriverScript.sCompareText = aWords[iSplit2];
+			logger.info("chosen word no: [" + iSplit2 + "]");
+
+		} catch (NumberFormatException e) {
+			logger.error(" * ActionKeywords|splitAndChoose2. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
+	}
+
+	public void copyAndPaste(String sObjectLocator, String sTestData, String sAdditionalRequest) {
+		try {
+			splitString(sObjectLocator, 2);
 			int iRow, iCol;
 			iRow = Integer.parseInt(aWords[0]);
 			iCol = Integer.parseInt(aWords[1]);
 			String sData = ExcelUtils.getCellData(iRow, iCol, Constants.Sheet_TestData);
-			
-			splitString (sTestData, 2);
+
+			splitString(sTestData, 2);
 			iRow = Integer.parseInt(aWords[0]);
 			iCol = Integer.parseInt(aWords[1]);
 			ExcelUtils.setCellData(sData, iRow, iCol, Constants.Sheet_TestData);
-			
+
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|copyAndPaste. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void openBrowser(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			switch (sTestData.toLowerCase()) {
 			case "chrome":
-				//System.setProperty(Constants.Chrome_Property1, Constants.Chrome_Property2);
+				// System.setProperty(Constants.Chrome_Property1, Constants.Chrome_Property2);
 				ChromeDriverManager.getInstance().setup();
 				driver = new ChromeDriver();
 				driver.manage().window().maximize();
 				break;
 
 			case "ie":
-				//System.setProperty(Constants.IE_Property1, Constants.IE_Property2);
+				// System.setProperty(Constants.IE_Property1, Constants.IE_Property2);
 				InternetExplorerDriverManager.getInstance().setup();
 				driver = new InternetExplorerDriver();
 				break;
 
 			case "firefox":
-				//System.setProperty(Constants.Firefox_Property1, Constants.Firefox_Property2);
+				// System.setProperty(Constants.Firefox_Property1, Constants.Firefox_Property2);
 				FirefoxDriverManager.getInstance().setup();
 				driver = new FirefoxDriver();
 				break;
@@ -222,7 +350,7 @@ public class ActionKeywords {
 			case "safari":
 				driver = new SafariDriver();
 				break;
-				
+
 			case "htmlunit":
 				driver = new HtmlUnitDriver();
 				break;
@@ -245,31 +373,36 @@ public class ActionKeywords {
 		}
 	}
 
-	public void tryClick(String sObjectLocator, String sTestData, String sAdditionalRequest)throws InterruptedException {
-		
-			try {
-				logger.info("Action......Clicking on ObjectLocator [" + sObjectLocator + "]");
-				//Thread.sleep(10);
-				WebElement wObject = driver.findElement(By.xpath(sObjectLocator));
-				// waiting for another thread with duties that are understood to have time requirements
-				Thread.sleep(10);
-				wObject.click();
-				Thread.sleep(10);
-				//driver.findElement(By.xpath(sObjectLocator)).click();
-				//source = driver.findElement(By.xpath(sObjectLocator));
-				//if(source.isEnabled())
-			} catch (Exception e) {
-				logger.error(" * ActionKeywords|tryClick. Exception Message - " + e.getMessage());
-				DriverScript.bResult = false;
-			}
+	public void tryClick(String sObjectLocator, String sTestData, String sAdditionalRequest)
+			throws InterruptedException {
+
+		try {
+			logger.info("Action......Clicking on ObjectLocator [" + sObjectLocator + "]");
+			// Thread.sleep(10);
+			WebElement wObject = driver.findElement(By.xpath(sObjectLocator));
+			// waiting for another thread with duties that are understood to have time
+			// requirements
+			Thread.sleep(10);
+			wObject.click();
+			Thread.sleep(10);
+			// driver.findElement(By.xpath(sObjectLocator)).click();
+			// source = driver.findElement(By.xpath(sObjectLocator));
+			// if(source.isEnabled())
+		} catch (Exception e) {
+			logger.error(" * ActionKeywords|tryClick. Exception Message - " + e.getMessage());
+			DriverScript.bResult = false;
+		}
 	}
 
-	public void tryInput(String sObjectLocator, String sTestData, String sAdditionalRequest)throws InterruptedException {
+	public void tryInput(String sObjectLocator, String sTestData, String sAdditionalRequest)
+			throws InterruptedException {
 		try {
-			logger.info("Action......Input the text into ObjectLocator: [" + sObjectLocator + "]");
+			logger.info("Action......Inputing [" + sTestData + "] into ObjectLocator: [" + sObjectLocator + "]");
 			// driver.findElement(By.cssSelector(sObjectLocator)).sendKeys(sTestData);
+			tryClick(sObjectLocator, sTestData, sAdditionalRequest);
 			WebElement wObject = driver.findElement(By.xpath(sObjectLocator));
-			// waiting for another thread with duties that are understood to have time requirements
+			// waiting for another thread with duties that are understood to have time
+			// requirements
 			Thread.sleep(10);
 			wObject.sendKeys(sTestData);
 			Thread.sleep(10);
@@ -292,15 +425,16 @@ public class ActionKeywords {
 				driver.close();
 				break;
 			}
-			
+
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|tryClose. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 		// System.exit(0);
 	}
-	
-	public void openTab (String sObjectLocator, String sTestData, String sAdditionalRequest) throws InterruptedException {
+
+	public void openTab(String sObjectLocator, String sTestData, String sAdditionalRequest)
+			throws InterruptedException {
 		try {
 			// open new tab
 			Robot robot = new Robot();
@@ -311,25 +445,26 @@ public class ActionKeywords {
 			robot.delay(10);
 			// switch to the new tab
 			trySwitch("", "second", "");
-			/*for(String handle : driver.getWindowHandles()) {
-				driver.switchTo().window(handle);
-				logger.info(" windowHandle: [" + handle + "]");
-			}*/
-			//ArrayList<String> sTab = new ArrayList<String>(driver.getWindowHandles());
-			//driver.switchTo().window(sTab.get(1));
+			/*
+			 * for(String handle : driver.getWindowHandles()) {
+			 * driver.switchTo().window(handle); logger.info(" windowHandle: [" + handle +
+			 * "]"); }
+			 */
+			// ArrayList<String> sTab = new ArrayList<String>(driver.getWindowHandles());
+			// driver.switchTo().window(sTab.get(1));
 			// to navigate to new URl in the new tab
 			driver.get(sObjectLocator);
 		} catch (AWTException e) {
 			logger.error(" * ActionKeywords|openTab. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
-		
+
 	}
-	
+
 	public void trySwitch(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
-			for(String handle : driver.getWindowHandles()) {
-				//driver.switchTo().window(handle);
+			for (String handle : driver.getWindowHandles()) {
+				// driver.switchTo().window(handle);
 				logger.info(" windowHandle: [" + handle + "]");
 			}
 			ArrayList<String> sTab = new ArrayList<String>(driver.getWindowHandles());
@@ -348,9 +483,10 @@ public class ActionKeywords {
 				iHandle = 0;
 				break;
 			}
-			//int iHandle = Integer.parseInt(sTestData);
+			// int iHandle = Integer.parseInt(sTestData);
 			driver.switchTo().window(sTab.get(iHandle));
-			// waiting for another thread with duties that are understood to have time requirements
+			// waiting for another thread with duties that are understood to have time
+			// requirements
 			Thread.sleep(30);
 			logger.info(" switch to Handle: [" + iHandle + "]");
 		} catch (Exception e) {
@@ -358,42 +494,44 @@ public class ActionKeywords {
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void tryPopup(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			Alert alert = driver.switchTo().alert();
-			switch(sTestData.toLowerCase()) {
-			//accept or dismiss popup
+			switch (sTestData.toLowerCase()) {
+			// accept or dismiss popup
 			case "accept":
 				alert.accept();
 				break;
 			case "dismiss":
 				alert.dismiss();
 				break;
-			//verify its contents
+			// verify its contents
 			default:
 				DriverScript.sCompareText = alert.getText();
-				if(DriverScript.sCompareText.equalsIgnoreCase(sTestData)) {
-					logger.info("Text is: [" + DriverScript.sCompareText + "]" + " compared with expected: [" + sTestData + "]");
+				if (DriverScript.sCompareText.equalsIgnoreCase(sTestData)) {
+					logger.info("Text is: [" + DriverScript.sCompareText + "]" + " compared with expected: ["
+							+ sTestData + "]");
 					logger.info("Text is verified");
-				}else {
+				} else {
 					DriverScript.bResult = false;
-					logger.info("Text is: [" + DriverScript.sCompareText + "]" + " compared with expected: [" + sTestData + "]");
+					logger.info("Text is: [" + DriverScript.sCompareText + "]" + " compared with expected: ["
+							+ sTestData + "]");
 					logger.info("Text is not the same");
 				}
 				break;
-			
+
 			}
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|tryPopup. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void tryNavigate(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
-			switch(sTestData.toLowerCase()) {
-			
+			switch (sTestData.toLowerCase()) {
+
 			// move back a single "item" in the browser's history
 			case "back":
 				driver.navigate().back();
@@ -416,7 +554,7 @@ public class ActionKeywords {
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void dragAndDrop(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			source = driver.findElement(By.xpath(sObjectLocator));
@@ -426,9 +564,9 @@ public class ActionKeywords {
 			logger.error(" * ActionKeywords|DragAndDrop. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
-		
+
 	}
-	
+
 	public void selectDropDown(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			int iDropDownIndex = Integer.parseInt(sTestData);
@@ -439,34 +577,36 @@ public class ActionKeywords {
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void verifyURL(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			DriverScript.sCompareText = driver.getCurrentUrl();
-			if(DriverScript.sCompareText.equals(sObjectLocator)) {
-				logger.info("URL is: [" + DriverScript.sCompareText + "] compared with expected: [" + sObjectLocator + "]");
+			if (DriverScript.sCompareText.equals(sObjectLocator)) {
+				logger.info(
+						"URL is: [" + DriverScript.sCompareText + "] compared with expected: [" + sObjectLocator + "]");
 				logger.info("URL verified");
-				
-			}else {
+
+			} else {
 				DriverScript.bResult = false;
-				logger.info("URL is: [" + DriverScript.sCompareText + "] compared with expected: [" + sObjectLocator + "]");
+				logger.info(
+						"URL is: [" + DriverScript.sCompareText + "] compared with expected: [" + sObjectLocator + "]");
 				logger.info("Text not the same");
 			}
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|verifyURL. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
-		
+
 	}
-	
+
 	public void trySlide(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			source = driver.findElement(By.xpath(sObjectLocator));
-			
+
 			int iXcoordinate = source.getLocation().getX();
 			int iYcoordinate = source.getLocation().getY();
 			logger.info("x1, y1: [" + iXcoordinate + "]" + ", [" + iYcoordinate + "]");
-			
+
 			int iOffset = Integer.parseInt(sTestData);
 			int iXoffset = iXcoordinate + iOffset;
 			logger.info("x before offset, x after offset: [" + iXcoordinate + "]" + ", [" + iXoffset + "]");
@@ -476,24 +616,24 @@ public class ActionKeywords {
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void tryScroll(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
-			JavascriptExecutor js = (JavascriptExecutor)driver;
+			JavascriptExecutor js = (JavascriptExecutor) driver;
 			source = driver.findElement(By.xpath(sObjectLocator));
 			int iXcoordinate = source.getLocation().getX();
 			int iYcoordinate = source.getLocation().getY();
-			js.executeScript("window.scrollBy("+iXcoordinate+","+iYcoordinate+")","");
+			js.executeScript("window.scrollBy(" + iXcoordinate + "," + iYcoordinate + ")", "");
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|tryScroll. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
 	}
-	
+
 	public void waitUntil(String sObjectLocator, String sTestData, String sAdditionalRequest) {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, 60);
-			switch(sTestData) {
+			switch (sTestData) {
 			case "clickable":
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(sObjectLocator)));
 				break;
