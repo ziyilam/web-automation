@@ -638,7 +638,14 @@ public class ActionKeywords {
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(sObjectLocator)));
 				break;
 			case "sleep":
+				if (sAdditionalRequest=="NULL") {
 				Thread.sleep(2000);
+				} else {
+					int iSleep = Integer.parseInt(sAdditionalRequest);
+					logger.info("sleep for: [" + iSleep + "] msec");
+					Thread.sleep(iSleep);
+				}
+				
 				break;
 			default:
 				wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(sObjectLocator)));
