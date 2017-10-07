@@ -17,6 +17,9 @@ public class Constants {
 	// No IEDriverServers for MACs ////
 	//public static final String Path_TestData = ".//src//dataEngine//DataEngine.xlsx";
 
+	public static final int Sec_implicitlyWait = 10;
+	public static final int Sec_pageLoadTimeout = 300;
+	
 	public static final int Col_TestCaseID = 0;
 	public static final int Col_RunMode = 2;
 	public static final int Col_CaseResults = 3;
@@ -29,12 +32,16 @@ public class Constants {
 	public static final int Col_StepResults = 7;
 	
 	public static final int Col_stk_name = 1;
+	public static final int Col_Remark = 2;
 	public static final int Col_EPS = 3;
 	
 	public static final String Sheet_TestCases = "TestCases";
 	public static final String Sheet_TestSteps = "TestSteps";
 	public static final String Sheet_TestData = "TestData";
-	public static final String Sheet_Stock = "Stock";
+	
+	public static final String Sheet_Fin = "FIN";
+	public static final String Sheet_Tech = "TECH";
+	
 	public static final String KEYWORD_FAIL = " * FAIL";
 	public static final String KEYWORD_PASS = "PASS";
 	public static final String KEYWORD_EMPTY = "";

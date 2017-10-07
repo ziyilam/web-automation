@@ -38,6 +38,9 @@ public class ActionKeywords {
 	private static int iNameCount = 1;
 	private static String sCol;
 	private static boolean bTryLoop = true;
+	private static boolean bChangeSheet = false;
+	private static String sSheetName;
+	private static String sURL;
 
 	private static void splitString(String sInput, int iSplit) {
 		try {
@@ -174,19 +177,66 @@ public class ActionKeywords {
 	}
 
 	public void tryLoop(String sObjectLocator, String sTestData, String sAdditionalRequest) {
-
+		int iSheet = 0;
 		try {
-			// read excel to get all names
+			// read excel to get all stock names
 			do {
-				getAndInput(sObjectLocator, sTestData, sAdditionalRequest);
+				// change to another sheet
+				if (bChangeSheet) {
+					iSheet++;
+					iNameCount = 1;
+				}
 				
-				getAndPaste(sObjectLocator, sTestData, sAdditionalRequest);
-				logger.info("continue loop (true/false): [" + bTryLoop + "]");
-				// go back to the search page
-				tryNavigate(sObjectLocator, "back", sAdditionalRequest);
-				logger.info("[navigate back]");
+				switch (iSheet) {
+				case 0:
+					sSheetName = Constants.Sheet_Fin;
+					bChangeSheet = false;
+					break;
+				case 1:
+					sSheetName = Constants.Sheet_Tech;
+					bChangeSheet = false;
+					break;
+
+				default:
+					bTryLoop = false;
+					logger.info("[tryLoop|all stock sheet completed]");
+					logger.info("tryLoop|continue loop (true/false): [" + bTryLoop + "]");
+					bChangeSheet = false;
+					break;
+				}
+				logger.info("tryLoop|sheet number: [" + iSheet + "]");
+				logger.info("tryLoop|sheet name: [" + sSheetName + "]");
+				
+				// clear old remarks
+				if(!ExcelUtils.getCellData(iNameCount, Constants.Col_Remark, sSheetName).isEmpty()) {
+				logger.info("tryLoop|[clearing old remarks]");
+				ExcelUtils.setCellData("", iNameCount, Constants.Col_Remark, sSheetName);
+				}
+				
+				// skip execute if EPS column is already filled
+				String sEPS = ExcelUtils.getCellData(iNameCount, Constants.Col_EPS, sSheetName);
+				logger.info("tryLoop|EPS column value: [" + sEPS + "]");
+				if (sEPS.isEmpty() || sEPS == "NULL" && bTryLoop) {
+					getAndInput(sObjectLocator, sTestData, sAdditionalRequest);
+
+					getAndPaste(sObjectLocator, sTestData, sAdditionalRequest);
+					logger.info("tryLoop|continue loop (true/false): [" + bTryLoop + "]");
+					// go back to the search page
+					// tryNavigate(sObjectLocator, "back", sAdditionalRequest);
+					driver.get(sURL);
+					logger.info("tryLoop|back to page: [" + sURL + "]");
+				} else {
+					iNameCount++;
+					// get stock name from excel, if NULL then quit
+					String sData = ExcelUtils.getCellData(iNameCount, Constants.Col_stk_name, sSheetName);
+					logger.info("tryLoop|increased name count to: [" + iNameCount + "] and got stock name of: [" + sData + "]");
+					if (sData == "NULL"||sData.isEmpty()) {
+						//bTryLoop = false;
+						bChangeSheet = true;
+					}
+				}
 			} while (bTryLoop);
-			logger.info("[break tryLoop]");
+			logger.info("[tryLoop|break tryLoop]");
 
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|tryLoop. Exception Message - " + e.getMessage());
@@ -199,15 +249,18 @@ public class ActionKeywords {
 		try {
 
 			// get name from excel
-			logger.info("getting name no.: [" + iNameCount + "]");
-			String sData = ExcelUtils.getCellData(iNameCount, Constants.Col_stk_name, Constants.Sheet_Stock);
+			logger.info("getAndInput|getting stock name no.: [" + iNameCount + "]");
+			String sData = ExcelUtils.getCellData(iNameCount, Constants.Col_stk_name, sSheetName);
 			sData = sData.toUpperCase();
-			logger.info("stock name: [" + sData + "]");
+			logger.info("getAndInput|stock name: [" + sData + "]");
 
 			// input the name into web element
+			// change to another sheet if this sheet has no more stock name
+			if (sData == "NULL" || sData.isEmpty()) {
+				// bTryLoop = false;
+				bChangeSheet = true;
+				logger.info("[getAndInput|change to another sheet]");
 
-			if (sData == "NULL") {
-				bTryLoop = false;
 			} else {
 				tryInput(sObjectLocator, sData, sAdditionalRequest);
 				Robot robot = new Robot();
@@ -220,40 +273,46 @@ public class ActionKeywords {
 			logger.error(" * ActionKeywords|getAndInput. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
 		}
-		// logger.info("name exist (true/fase): [" + bTryLoop + "]");
 
 	}
 
-	private void getAndPaste(String sObjectLocator, String sTestData, String sAdditionalRequest) {
+	private void getAndPaste(String sObjectLocator, String sTestData, String sAdditionalRequest) throws Exception {
+		int iCol = 0;
 		try {
-			if (bTryLoop) {
-			// get data from web element
-			getAllKindsOfText(sTestData);
-			// choose which word to paste
-			splitAndChoose2(sAdditionalRequest);
-			int iCol;
-			// paste the data to the excel
-			logger.info("column chosen: [" + sCol + "]");
-			switch (sCol) {
-			case "EPS":
-				iCol = Constants.Col_EPS;
-				break;
+			// execute only when the loop is still in the same sheet
+			if (bTryLoop && (!bChangeSheet)) {
+				// get data from web element
+				getAllKindsOfText(sTestData);
+				// choose which word to paste
+				splitAndChoose2(sAdditionalRequest);
 
-			default:
-				iCol = Constants.Col_EPS;
-				break;
-			}
-			ExcelUtils.setCellData(DriverScript.sCompareText, iNameCount, iCol, Constants.Sheet_Stock);
-			// increase the count after it has been pasted into the excel
-			iNameCount++;
-			logger.info("name count increased to: [" + iNameCount + "]");
+				// paste the data to the excel
+				logger.info("getAndPaste|column chosen: [" + sCol + "]");
+				switch (sCol) {
+				case "EPS":
+					iCol = Constants.Col_EPS;
+					break;
+
+				default:
+					iCol = Constants.Col_EPS;
+					break;
+				}
+				ExcelUtils.setCellData(DriverScript.sCompareText, iNameCount, iCol, sSheetName);
+				// increase the count after it has been pasted into the excel
+				iNameCount++;
+				logger.info("getAndPaste|name count increased to: [" + iNameCount + "]");
 			} else {
-				logger.info("[skip getAndPaste]");
+				logger.info("[getAndPaste|skip getAndPaste]");
 			}
 		} catch (Exception e) {
 			logger.error(" * ActionKeywords|getAndPaste. Exception Message - " + e.getMessage());
 			DriverScript.bResult = false;
-			bTryLoop = false;
+			// increase the count and continue the rest of the list if the stock name does
+			// not exist
+			// and wtite a remark in the excel
+			ExcelUtils.setCellData("*****", iNameCount, Constants.Col_Remark, sSheetName);
+			iNameCount++;
+
 		}
 	}
 
@@ -266,7 +325,7 @@ public class ActionKeywords {
 			// second word is the word choose to set into the cell
 			int iSplit2 = Integer.parseInt(aWords[1]);
 			// third word is the column name in the Stock sheet saved in aWords[2]
-			//sCol = aWords[2];
+			// sCol = aWords[2];
 			// count from 1 instead of 0
 			iSplit2 = iSplit2 - 1;
 
@@ -281,6 +340,7 @@ public class ActionKeywords {
 			DriverScript.bResult = false;
 		}
 	}
+
 	private static void splitAndChoose2(String sAdditionalRequest) {
 		try {
 			// split AdditionalRequest into 3 words
@@ -359,12 +419,12 @@ public class ActionKeywords {
 				logger.warn("Browser name not match");
 				break;
 			}
-
-			driver.get(sObjectLocator);
+			sURL = sObjectLocator;
+			driver.get(sURL);
 			driver.manage().deleteAllCookies();
 			// driver.manage().window().maximize();
-			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-			driver.manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(Constants.Sec_implicitlyWait, TimeUnit.SECONDS);
+			driver.manage().timeouts().pageLoadTimeout(Constants.Sec_pageLoadTimeout, TimeUnit.SECONDS);
 			logger.info("Action......Opening the browser");
 
 		} catch (Exception e) {
@@ -638,14 +698,16 @@ public class ActionKeywords {
 				wait.until(ExpectedConditions.elementToBeClickable(By.xpath(sObjectLocator)));
 				break;
 			case "sleep":
-				if (sAdditionalRequest=="NULL") {
-				Thread.sleep(2000);
+				if (sAdditionalRequest == "NULL") {
+					Thread.sleep(2000);
 				} else {
 					int iSleep = Integer.parseInt(sAdditionalRequest);
+					// turn second into mili seconds
+					iSleep = iSleep * 1000;
 					logger.info("sleep for: [" + iSleep + "] msec");
 					Thread.sleep(iSleep);
 				}
-				
+
 				break;
 			default:
 				wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(sObjectLocator)));
