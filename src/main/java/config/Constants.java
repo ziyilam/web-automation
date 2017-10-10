@@ -39,8 +39,16 @@ public class Constants {
 	public static final String Sheet_TestSteps = "TestSteps";
 	public static final String Sheet_TestData = "TestData";
 	
-	public static final String Sheet_Fin = "FIN";
-	public static final String Sheet_Tech = "TECH";
+	public static final String Sheet_Stk0 = "CONSU";
+	public static final String Sheet_Stk1 = "INDPR";
+	public static final String Sheet_Stk2 = "CONTR";
+	public static final String Sheet_Stk3 = "T&SERV";
+	public static final String Sheet_Stk4 = "FIN";
+	public static final String Sheet_Stk5 = "PLNT";
+	public static final String Sheet_Stk6 = "PROP";
+	public static final String Sheet_Stk7 = "TECH";
+	public static final String Sheet_Stk8 = "IPC";
+	public static final String Sheet_Stk9 = "REITS";
 	
 	public static final String KEYWORD_FAIL = " * FAIL";
 	public static final String KEYWORD_PASS = "PASS";

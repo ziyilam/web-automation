@@ -52,9 +52,9 @@ public class DriverScript {
 	}
 
 	private void execute_TestCase() throws Exception {
-		logger.info("\n\n---------------------------------------   START  ---------------------------------------\n\n\n");
+		logger.info("\n\n---------------------------------------   execute_TestCase|START  ---------------------------------------\n\n\n");
 		iTotalTestCases = ExcelUtils.getRowCount(Constants.Sheet_TestCases);
-		logger.info("Total TestCases: [" + iTotalTestCases + "]");
+		logger.info("execute_TestCase|Total TestCases: [" + iTotalTestCases + "]");
 		// record the column available in the testData sheet
 		record_HeaderName();
 
@@ -62,15 +62,15 @@ public class DriverScript {
 		for (iTestcase = 1; iTestcase <= iTotalTestCases; iTestcase++) {
 			// Every new Test case the bResult is reset to true
 			bResult = true;
-			logger.info("TestCase no.: [" + iTestcase + "]");
+			logger.info("execute_TestCase|TestCase no.: [" + iTestcase + "]");
 			sTestCaseID = ExcelUtils.getCellData(iTestcase, Constants.Col_TestCaseID, Constants.Sheet_TestCases);
-			logger.info("TestCaseID: [" + sTestCaseID + "]");
+			logger.info("execute_TestCase|TestCaseID: [" + sTestCaseID + "]");
 			sRunMode = ExcelUtils.getCellData(iTestcase, Constants.Col_RunMode, Constants.Sheet_TestCases);
-			logger.info("\n\nsRunMode: [" + sRunMode + "]"
+			logger.info("\n\nexecute_TestCase|sRunMode: [" + sRunMode + "]"
 					+ "\n\n\n");
 			// clear previous data in Test Case Results column
 			if(!ExcelUtils.getCellData(iTestcase, Constants.Col_CaseResults, Constants.Sheet_TestCases).isEmpty()) {
-			logger.info("Clearing old result data for TestCase: [" + sTestCaseID + "]");
+			logger.info("execute_TestCase|Clearing old result data for TestCase: [" + sTestCaseID + "]");
 			ExcelUtils.setCellData(Constants.KEYWORD_EMPTY, iTestcase, Constants.Col_CaseResults,
 					Constants.Sheet_TestCases);
 			}
@@ -80,27 +80,27 @@ public class DriverScript {
 			iLastTestStep = ExcelUtils.getStepsCount(Constants.Sheet_TestSteps, sTestCaseID, iStartTestStep);
 			if(!ExcelUtils.getCellData(iStartTestStep, Constants.Col_StepResults, Constants.Sheet_TestSteps).isEmpty()) {
 			for(;iStartTestStep<=iLastTestStep;iStartTestStep++) {
-				logger.info("Clearing old result data for TestStep: [" + iStartTestStep + "]");
+				logger.info("execute_TestCase|Clearing old result data for TestStep: [" + iStartTestStep + "]");
 				ExcelUtils.setCellData(Constants.KEYWORD_EMPTY, iStartTestStep, Constants.Col_StepResults,Constants.Sheet_TestSteps);
 			}
 			}
 			// Only execute the test case with run mode equals to yes
 			if (sRunMode.equalsIgnoreCase("Yes")) {
 				//startTestCase
-				logger.warn("\n\n-------------------             [" + sTestCaseID + "]"
+				logger.warn("\n\n-------------------             execute_TestCase|[" + sTestCaseID + "]"
 						+ " TestStep begins                -------------------\n\n\n");
 				iStartTestStep = ExcelUtils.getRowStartWith(sTestCaseID, Constants.Col_TestCaseID,
 						Constants.Sheet_TestSteps);
-				logger.info("1st TestStep at row: [" + iStartTestStep + "]");
+				logger.info("execute_TestCase|1st TestStep at row: [" + iStartTestStep + "]");
 				iLastTestStep = ExcelUtils.getStepsCount(Constants.Sheet_TestSteps, sTestCaseID, iStartTestStep);
-				logger.info("Last TestStep at row: [" + iLastTestStep + "]");
+				logger.info("execute_TestCase|Last TestStep at row: [" + iLastTestStep + "]");
 				
 				// if there is any testData for this testCase only calculate TestData total row
 				iStartTestData = ExcelUtils.getRowStartWith(sTestCaseID, Constants.Col_TestCaseID,
 						Constants.Sheet_TestData);
 				iLastTestData = ExcelUtils.getStepsCount(Constants.Sheet_TestData, sTestCaseID, iStartTestData);
-				logger.info("1st TestData at row: [" + iStartTestData + "]");
-				logger.info("Last TestData at row: [" + iLastTestData + "]");
+				logger.info("execute_TestCase|1st TestData at row: [" + iStartTestData + "]");
+				logger.info("execute_TestCase|Last TestData at row: [" + iLastTestData + "]");
 
 				// Execute for sets of different test data
 				// if there is testData, loop testData, else run without test data
@@ -111,13 +111,13 @@ public class DriverScript {
 					
 					// every new set of test data the bResult is reset to true
 					bResult = true;
-					logger.info("\n\nTest start for new TestData"
+					logger.info("\n\nexecute_TestCase|Test start for new TestData"
 							+ "\n\n\n");
 					
 					// Loop for all test steps
 					for (iCountTestStep = iStartTestStep; iCountTestStep <= iLastTestStep; iCountTestStep++) {
 						
-						logger.info("TestStep row no.: [" + iCountTestStep + "]");
+						logger.info("execute_TestCase|TestStep row no.: [" + iCountTestStep + "]");
 						
 						
 						// get all data from test step columns, need iCountTestStep
@@ -134,7 +134,7 @@ public class DriverScript {
 						if (bResult == false) {
 							ExcelUtils.setCellData(Constants.KEYWORD_FAIL, iTestcase, Constants.Col_CaseResults,
 									Constants.Sheet_TestCases);
-							logger.warn("\n\n......Test Case Failed for [" + sTestCaseID + "]" + "......"
+							logger.warn("\n\n......execute_TestCase|Test Case Failed for [" + sTestCaseID + "]" + "......"
 									+ "\n\n\n");
 							//actionKeywords.tryClose("", "", "");
 							//logger.info("close browser from TestCase loop");
@@ -147,7 +147,7 @@ public class DriverScript {
 					if (bResult == true) {
 						ExcelUtils.setCellData(Constants.KEYWORD_PASS, iTestcase, Constants.Col_CaseResults,
 								Constants.Sheet_TestCases);
-						logger.info("\n\n......All TestStep Completed for [" + sTestCaseID + "]" + "......\n\n\n");
+						logger.info("\n\n......execute_TestCase|All TestStep Completed for [" + sTestCaseID + "]" + "......\n\n\n");
 					}
 					// If test case fail, skip for the rest of the data set
 					if (bResult == false) {
@@ -156,11 +156,11 @@ public class DriverScript {
 					
 				} 
 				//endTestCase
-				logger.warn("\n\n--------------------------------[" + sTestCaseID + "]" + " TestCase " + " Ended"
+				logger.warn("\n\n--------------------------------execute_TestCase|[" + sTestCaseID + "]" + " TestCase " + " Ended"
 						+ "------------------------------------\n\n\n");
 			}
 		}
-		logger.info("\n\n......No more TestCase with 'Yes' RunMode......\n\n"
+		logger.info("\n\n......execute_TestCase|No more TestCase with 'Yes' RunMode......\n\n"
 				+ "---------------------------------------   E-N-D  ---------------------------------------" 
 				+ "\n\n\n");
 		
@@ -170,31 +170,33 @@ public class DriverScript {
 		
 	}*/
 	private static void check_IfGotTestData(int iStart, int iLast) {
+		logger.info("[check_IfGotTestData|checking if there is any Test Data]");
 		int iCount = iLastTestData - iStartTestData;
-		logger.info("icount: [" + iCount + "]");
+		logger.info("check_IfGotTestData|icount: [" + iCount + "]");
 		if(iCount < 0) {
 			iLastTestData = iStartTestData;
-			logger.info("1st TestData at row: [" + iStartTestData + "]");
-			logger.info("Last TestData at row: [" + iLastTestData + "]");
+			logger.info("check_IfGotTestData|1st TestData at row: [" + iStartTestData + "]");
+			logger.info("check_IfGotTestData|Last TestData at row: [" + iLastTestData + "]");
 		}
 	}
 	private static void execute_Action() throws Exception {
 		Boolean bKeyword = false;
 		try {
+			logger.info("[execute_Action|executing action keywords]");
 			for (int i = 0; i < method.length; i++) {
 				if (method[i].getName().equalsIgnoreCase(sActionKeyword)) {
 					bKeyword = true;
 					method[i].invoke(actionKeywords, sObjectLocator, sTestDataItem, sAdditionalRequest);
 					//method[i].invoke(actionKeywords, sObjectLocator, sActionKeyword, sTestDataItem);
-					logger.info("Executed TestData Item: [" + sTestDataItem + "]");
+					logger.info("execute_Action|Executed TestData Item: [" + sTestDataItem + "]");
 					if (bResult == true) {
 
-						logger.info("bResult: [" + bResult + "]" + " for [" + sTestStepID + "]");
+						logger.info("execute_Action|bResult: [" + bResult + "]" + " for [" + sTestStepID + "]");
 						ExcelUtils.setCellData(Constants.KEYWORD_PASS, iCountTestStep, Constants.Col_StepResults,
 								Constants.Sheet_TestSteps);
 						break;
 					} else {
-						logger.info("bResult: [" + bResult + "]" + " for [" + sTestStepID + "]");
+						logger.info("execute_Action|bResult: [" + bResult + "]" + " for [" + sTestStepID + "]");
 						ExcelUtils.setCellData(Constants.KEYWORD_FAIL, iCountTestStep, Constants.Col_StepResults,
 								Constants.Sheet_TestSteps);
 						break;
@@ -203,9 +205,9 @@ public class DriverScript {
 
 			}
 			if (bKeyword == false) {
-				logger.warn("......No such action keyword of: [" + sActionKeyword + "]");
+				logger.warn("execute_Action|No such action keyword of: [" + sActionKeyword + "]");
 				bResult = false;
-				logger.info("bResult: [" + bResult + "]" + " [TS_" + iCountTestStep + "]");
+				logger.info("execute_Action|bResult: [" + bResult + "]" + " [TS_" + iCountTestStep + "]");
 				ExcelUtils.setCellData(Constants.KEYWORD_FAIL, iCountTestStep, Constants.Col_StepResults,
 						Constants.Sheet_TestSteps);
 			}
@@ -218,15 +220,16 @@ public class DriverScript {
 	
 	private void fetch_TestData(String sTestData) throws Exception {
 		try {
+			logger.info("[fetch_TestData|fetching test data value]");
 			sTestDataItem = sTestData;
-			logger.info(" sTestDataItem: [" + sTestDataItem + "]");
+			logger.info(" fetch_TestData|sTestDataItem: [" + sTestDataItem + "]");
 			for(String sHeader:alCellHeader) {
 				
 				if(sHeader.equalsIgnoreCase(sTestData)) {
 					iCellHeaderIndex = alCellHeader.indexOf(sHeader);
 					sTestDataItem = ExcelUtils.getCellData(iCountTestData, iCellHeaderIndex, Constants.Sheet_TestData);
-					logger.info(" TestData sheet column: [" + sHeader + "]");
-					logger.info("Fetching TestData Item: [" + sTestDataItem + "]");
+					logger.info("fetch_TestData|TestData sheet column: [" + sHeader + "]");
+					logger.info("fetch_TestData|Fetching TestData Item: [" + sTestDataItem + "]");
 					break;
 				}
 			}
@@ -238,6 +241,7 @@ public class DriverScript {
 	
 	private void fetch_TestSteps(int iTestStepCount) throws Exception{
 		try {
+			logger.info("[fetch_TestSteps|fetching test steps instructions]");
 			sObjectLocator = ExcelUtils.getCellData(iCountTestStep, Constants.Col_ObjectLocator,
 					Constants.Sheet_TestSteps);
 			sActionKeyword = ExcelUtils.getCellData(iCountTestStep, Constants.Col_ActionKeyword,
@@ -249,9 +253,9 @@ public class DriverScript {
 			sAdditionalRequest = ExcelUtils.getCellData(iCountTestStep, Constants.Col_AdditionalRequest,
 					Constants.Sheet_TestSteps);
 	
-			logger.info("ActionKeyword: [" + sActionKeyword + "]");
-			logger.info("TestData: [" + sTestData + "]");
-			logger.info("AdditionalRequest: [" + sAdditionalRequest + "]");
+			logger.info("fetch_TestSteps|ActionKeyword: [" + sActionKeyword + "]");
+			logger.info("fetch_TestSteps|TestData: [" + sTestData + "]");
+			logger.info("fetch_TestSteps|AdditionalRequest: [" + sAdditionalRequest + "]");
 			
 		} catch (Exception e) {
 			logger.error(" * DriverScript|fetch_TestSteps. Exception message: " + e.getMessage());
@@ -261,14 +265,15 @@ public class DriverScript {
 	private static void record_HeaderName() throws Exception {
 
 		try {
+			logger.info("[record_HeaderName|recording header names]");
 			iCountCol = ExcelUtils.getColCount(Constants.Sheet_TestData, 0);
-			logger.info("TestData sheet ColCount: [" + iCountCol + "]");
+			logger.info("record_HeaderName|TestData sheet ColCount: [" + iCountCol + "]");
 			for (int i = 0; i < iCountCol; i++) {
 
 				alCellHeader.add(ExcelUtils.getCellData(0, i, Constants.Sheet_TestData));
 
 			}
-			logger.info("Header Name for TestData Sheet: " + alCellHeader);
+			logger.info("record_HeaderName|Header Name for TestData Sheet: [" + alCellHeader + "]");
 		} catch (Exception e) {
 			logger.error(" * DriverScript|record_HeaderName. Exception message: " + e.getMessage());
 		}

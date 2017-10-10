@@ -49,8 +49,8 @@ public class ExcelUtils {
 			return CellData;
 		
 		} catch (Exception e) {
-			logger.warn(" * No Cell Data is found and return [NULL]");
-			return "NULL";
+			logger.warn(" * No Cell Data is found and return []");
+			return "";
 		}
 	}
 
