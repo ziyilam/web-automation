@@ -207,7 +207,7 @@ public class ActionKeywords {
 				// count from 1 instead of 0
 				iSplit2 = iSplit2 - 1;
 				DriverScript.sCompareText = aWords[iSplit2];
-				logger.info("splitAndChoose|chosen word no: [" + iSplit2 + "]");
+				logger.info("splitAndChoose|chosen word no: [" + iSplit2 + "] word: [" + DriverScript.sCompareText + "]" );
 			}
 
 		} catch (NumberFormatException e) {

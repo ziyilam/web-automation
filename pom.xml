@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ict.automation</groupId>
   <artifactId>web-automation</artifactId>
-  <version>1.05</version>
+  <version>1.06</version>
   <name>ict.com web automation project</name>
   <description>ict.com web automation project using selenium, eclipse, maven</description>
    <packaging>jar</packaging>
