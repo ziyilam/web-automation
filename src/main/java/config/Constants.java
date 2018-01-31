@@ -9,7 +9,7 @@ public class Constants {
 	//public static final String Chrome_Property2 = "C:\\aSoftware\\Browser-Driver\\chromedriver.exe";
 	//public static final String Firefox_Property2 = "C:\\aSoftware\\Browser-Driver\\geckodriver.exe";
 	//public static final String IE_Property2 = "C:\\aSoftware\\Browser-Driver\\IEDriverServer.exe";
-	public static final String Path_TestData = ".\\aResource\\dataEngine\\DataEngine.xlsx";
+	public static final String Path_TestData = ".\\aResource\\DataEngine.xlsx";
 			
 	//for MAC
 	//public static final String Chrome_Property2 = ".//Browser-Driver//chromedriver";
